@@ -19,9 +19,8 @@ Resizing the window is NOT supported. Creating the layout and fitting everything
 ### How to build it yourself
 I just used this throughout development.
 
-Using C99 is a personal choice, `-mwindows` is so the executable doesn't generate a cmd window when it's ran.
+Using C99 is a personal choice, `-mwindows` is so the executable doesn't generate a cmd window when it's ran. GCC v. 13.1.0 (MinGW).
 
-GCC v. 13.1.0 (MinGW).
 `gcc main.c -std=c99 -mwindows -o win_cal`
 
 ### Final remarks
