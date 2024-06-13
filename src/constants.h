@@ -39,5 +39,5 @@ enum UI_CONSTANTS {
 enum CAL_CONSTANTS {
   ID_CAL_PREV = 99,
   ID_CAL_INP  = 100,
-  CAL_T_LEN   = 24,
+  CAL_T_LEN   = 32,
 };
