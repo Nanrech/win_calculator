@@ -1,6 +1,6 @@
 #ifndef UNICODE
 #define UNICODE
-#endif 
+#endif
 
 #include <windows.h>
 #include <stdio.h>
@@ -143,7 +143,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     }
 
     case WM_CHAR: {
-      /* 
+      /*
         Whenever app receives keyboard input for ANYTHING except
         - DELETE
         - ESCAPE
