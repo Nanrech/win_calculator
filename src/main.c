@@ -5,7 +5,6 @@
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>       // floor.h
-#include <limits.h>     // INT_MAX, INT_MIN
 
 #include "constants.h"  // INP_CONSTANTS, UI_CONSTANTS, CAL_CONSTANTS
 #include "macros.h"     // CREATEBUTTON, REDIRECT_TO_CLICK
@@ -412,15 +411,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
           // Invert input
           case ID_INV: {
+            int num_new_chars = 0;
+
             double in_number = _wtof(in_str);
             in_number *= -1;
 
             // Check if we have to render decimals
             if (floor(in_number) == in_number) {
-              swprintf_s(in_str, CAL_T_LEN + 1, L"%d", (int)(in_number));
+              num_new_chars = swprintf(in_str, CAL_T_LEN, L"%.0lf", in_number);
             }
             else {
-              swprintf_s(in_str, CAL_T_LEN + 1, L"%.4lf", in_number);
+              num_new_chars = swprintf(in_str, CAL_T_LEN, L"%.4lf", in_number);
+            }
+
+            // If the resulting number is greater than CALC_T_LEN - 1
+            // (swprintf returns total characters except \0)
+            // The number is too long and we are going to overflow
+            // (though it seems the result overflows before this can happen)
+            if (num_new_chars > CAL_T_LEN - 1) {
+                MessageBox(hwnd, L"Result has overflown.", L"Error", MB_OK | MB_ICONERROR);
+                // vvv (This is equivalent to pressing the reset button)
+                SendMessage(hwnd, WM_COMMAND, ID_AC, 0);
+                return 0;
             }
 
             // If the number is now negative, the string is now one char longer
@@ -435,16 +447,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             // If it's zero, nothing changed
             // (n * -1) = 0 | n = 0
-
-            // However...
-            // This input might overflow. We don't want that.
-            if (in_number >= INT_MAX || in_number <= INT_MIN) {
-              MessageBox(hwnd, L"Input overflow. Resetting.", L"Error", MB_OK | MB_ICONERROR);
-              // vvv (This is equivalent to pressing the reset button)
-              SendMessage(hwnd, WM_COMMAND, ID_AC, 0);
-
-              return 0;
-            }
 
             // Set new text
             SetDlgItemTextW(hwnd, ID_CAL_INP, in_str);
@@ -479,6 +481,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             // If we have to execute an operation
             if ((g_calc_state.op != '_') || (g_calc_state.last_op != '_' && g_calc_state.last_in != NAN)) {
               // These are the variables we're working with
+              int num_new_chars = 0;
               double prev_number = _wtof(prev_str);
               char op = '_';
               double in_number = 0;
@@ -543,23 +546,23 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 }
               }
 
-              // One last assertion before we can display the result!
-              // My (actual) calculator usually just errors when this happens.
-              // If aborting is good enough for CASIO, it is good enough for me.
-              if (result >= INT_MAX || result <= INT_MIN) {
-                MessageBox(hwnd, L"Result overflow. Resetting.", L"Error", MB_OK | MB_ICONERROR);
-                SendMessage(hwnd, WM_COMMAND, ID_AC, 0);
-
-                return 0;
-              }
-
               // Set buffer text to the result and reset current operator.
               // Also check if result has any decimals.
               if (floor(result) == result) {
-                swprintf_s(prev_str, CAL_T_LEN + 1, L"%d", (int)(result));
+                num_new_chars = swprintf(prev_str, CAL_T_LEN, L"%.0lf", result);
               }
               else {
-                swprintf_s(prev_str, CAL_T_LEN + 1, L"%.4lf", result);
+                num_new_chars = swprintf(prev_str, CAL_T_LEN, L"%.4lf", result);
+              }
+
+              // If the resulting number is greater than CALC_T_LEN - 1
+              // (swprintf returns total characters except \0)
+              // The number is too long and we are going to overflow
+              if (num_new_chars > CAL_T_LEN - 1) {
+                  MessageBox(hwnd, L"Result has overflown.", L"Error", MB_OK | MB_ICONERROR);
+                  // vvv (This is equivalent to pressing the reset button)
+                  SendMessage(hwnd, WM_COMMAND, ID_AC, 0);
+                  return 0;
               }
 
               SetDlgItemTextW(hwnd, ID_CAL_PREV, prev_str);
