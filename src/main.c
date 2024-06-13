@@ -566,12 +566,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
               // If we just executed in a new operation:
               if (is_new_operation) {
-                // Reset op
-                g_calc_state.op = '_';
-
                 // Set 'latest' state in case user presses execute again
                 g_calc_state.last_op = g_calc_state.op;
                 g_calc_state.last_in = in_number;
+
+                // Reset op
+                g_calc_state.op = '_';
               }
 
               return 0;
