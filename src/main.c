@@ -479,7 +479,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
 
             // If we have to execute an operation
-            if ((g_calc_state.op != '_') || (g_calc_state.last_op != '_' && g_calc_state.last_in != NAN)) {
+            if ((g_calc_state.op != '_') || (g_calc_state.last_op != '_')) {
               // These are the variables we're working with
               int num_new_chars = 0;
               double prev_number = _wtof(prev_str);
@@ -513,7 +513,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
               }
 
               // Assert we're in a valid state. Otherwise reset.
-              if (op == '_' || in_number == NAN) {
+              if (op == '_') {
                 MessageBox(hwnd, L"Invalid state reached. Aborting.\nTried to compute with null operator or NAN operand.", L"Error", MB_OK | MB_ICONERROR);
                 // vvv (This is equivalent to pressing the reset button)
                 SendMessage(hwnd, WM_COMMAND, ID_AC, 0);
