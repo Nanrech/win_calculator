@@ -9,6 +9,7 @@
 #include "constants.h"  // INP_CONSTANTS, UI_CONSTANTS, CAL_CONSTANTS
 #include "macros.h"     // CREATEBUTTON, REDIRECT_TO_CLICK
 #include "state.h"      // calculator_state
+#include "resource.h"   // app icon
 
 
 /*
@@ -608,15 +609,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
   This is all mostly uninsteresting code copied straight from the docs.
 */
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-  // 1. Register the window class. Idk the naming rules/conventions.
-  const wchar_t CLASS_NAME[]  = L"CalculatorWindowClassThing";
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
+  // 1. Register the window class
+  const wchar_t CLASS_NAME[]  = L"CalculatorWindowClass";
 
   WNDCLASS wc = {
     .lpfnWndProc = WindowProc,
     .hInstance = hInstance,
     .lpszClassName = CLASS_NAME,
-    .hIcon = LoadImageA(hInstance, "../calc_icon.ico", IMAGE_ICON, 16, 16, LR_LOADFROMFILE)
+    .hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MYICON))
   };
 
   RegisterClass(&wc);
