@@ -17,8 +17,8 @@ Its user interface behaves similarly to Windows 10's default calculator. It supp
 Just use this:
 `gcc src/main.c -std=c99 -mwindows -o win_cal`
 
-Throughout development I used this (extra warnings and errors):
-`gcc src/main.c -o win_cal -std=c99 -mwindows -Wall -Wfatal-errors -Wextra -Werror`
+I used this throughout development (extra warnings and errors, includes icon):
+`gcc src/main.c res.o -o win_cal -std=c99 -mwindows -Wall -Wfatal-errors -Wextra -Werror`
 
 ### Final remarks
 - Inspiration taken from https://mitxela.com/projects/windows_calculator
